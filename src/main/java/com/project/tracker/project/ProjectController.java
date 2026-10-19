@@ -29,6 +29,8 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectResponseRecord> createProject(@RequestBody @Valid ProjectRequestRecord input) {
         Project project = mapper.toProject(input);
+        project.setName(project.getName().trim());
+        project.setDescription(project.getDescription().trim());
 
         Project projectSaved = repository.save(project);
         URI location = ServletUriComponentsBuilder
