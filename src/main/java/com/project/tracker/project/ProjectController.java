@@ -30,8 +30,9 @@ public class ProjectController {
     public ResponseEntity<ProjectResponseRecord> createProject(@RequestBody @Valid ProjectRequestRecord input) {
         Project project = mapper.toProject(input);
         project.setName(project.getName().trim());
-        project.setDescription(project.getDescription().trim());
-
+        if (project.getDescription() != null) {
+            project.setDescription(project.getDescription().trim());
+        }
         Project projectSaved = repository.save(project);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -43,9 +44,9 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ProjectResponseRecord getProjectById(@PathVariable(value="id") Long id){
+    public ProjectResponseRecord getProjectById(@PathVariable(value = "id") Long id) {
         return mapper.toRecord(repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "project id " + id + " not found")));
     }
 }
 
